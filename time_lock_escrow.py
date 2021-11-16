@@ -1,5 +1,4 @@
 import time
-import json
 import base64
 
 from datetime import datetime as dt
@@ -11,6 +10,10 @@ from pyteal import *
 from pyteal.ast import app
 
 '''
+***************************WARNING*******************************
+THIS SCRIPT IS PROVIDED FOR INFORMATIONAL PURPOSES ONLY AND
+HAS NOT BEEN AUDITED FOR SECURITY
+*****************************************************************
 Simple script to make a Time Locked Smart Contract Escrow Account
 
 Based on Algorand documentation examples:
