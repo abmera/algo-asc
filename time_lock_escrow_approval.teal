@@ -1,0 +1,127 @@
+#pragma version 5
+txn ApplicationID
+int 0
+==
+bnz main_l25
+txn OnCompletion
+int NoOp
+==
+bnz main_l11
+txn OnCompletion
+int OptIn
+==
+bnz main_l10
+txn OnCompletion
+int CloseOut
+==
+bnz main_l9
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l8
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l7
+err
+main_l7:
+err
+main_l8:
+err
+main_l9:
+int 1
+return
+main_l10:
+int 0
+return
+main_l11:
+txn NumAppArgs
+int 0
+==
+bnz main_l24
+txna ApplicationArgs 0
+byte "update"
+==
+bnz main_l20
+txna ApplicationArgs 0
+byte "withdraw"
+==
+txn Sender
+addr AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+==
+global LatestTimestamp
+int 1637090100
+>
+&&
+global CurrentApplicationAddress
+balance
+txna ApplicationArgs 0
+btoi
+>=
+&&
+&&
+bnz main_l17
+int 1
+bnz main_l16
+err
+main_l16:
+int 0
+return
+main_l17:
+itxn_begin
+addr AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+itxn_field Receiver
+int pay
+itxn_field TypeEnum
+txna ApplicationArgs 1
+btoi
+itxn_field Amount
+global CurrentApplicationAddress
+balance
+txna ApplicationArgs 1
+btoi
+int 101000
++
+<
+bnz main_l19
+main_l18:
+itxn_submit
+int 1
+return
+main_l19:
+addr AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+itxn_field CloseRemainderTo
+b main_l18
+main_l20:
+global LatestTimestamp
+byte "timeout-until"
+app_global_get
+<=
+bnz main_l23
+byte "timeout-remaining"
+int 0
+app_global_put
+main_l22:
+int 1
+return
+main_l23:
+byte "timeout-remaining"
+byte "timeout-until"
+app_global_get
+global LatestTimestamp
+-
+app_global_put
+b main_l22
+main_l24:
+err
+main_l25:
+byte "timeout-until"
+int 1637090100
+app_global_put
+byte "timeout-remaining"
+int 1637090100
+global LatestTimestamp
+-
+app_global_put
+int 1
+return
